@@ -7,6 +7,8 @@ This is based off of [@phproberto](https://github.com/phproberto/vscode-php-gett
 I removed custom template features and all of the configuration options.
 It's a simple extension doing a simple job.
 
+I've updated the extension to work with PHP type hinting.
+
 ## Features
 
 This extension allows you to quickly generate getters and setters with one single command.
