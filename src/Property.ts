@@ -8,8 +8,6 @@ export default class Property {
     private indentation: string;
     private name: string;
     private type: string = null;
-    private typeHint: string = null;
-    private pseudoTypes = ['mixed', 'number', 'callback', 'array|object', 'void', 'null', 'integer'];
 
     public constructor(name: string)
     {
@@ -36,57 +34,18 @@ export default class Property {
 
         property.indentation = activeLine.text.substring(0, activeLine.firstNonWhitespaceCharacterIndex);
 
-        const previousLineNumber = activeLineNumber - 1;
+        let lastChar;
 
-        if (previousLineNumber <= 0) {
-            return property;
+        if(activeLine.text.includes('=')){
+            lastChar = activeLine.text[activeLine.text.indexOf('=') - 1] === ' ' ? activeLine.text.indexOf('=') - 1 : activeLine.text.indexOf('=');
+        }else{
+            lastChar = activeLine.text.indexOf(';');
         }
 
-        const previousLine = editor.document.lineAt(previousLineNumber);
+        const lineInfo = activeLine.text.substring(activeLine.firstNonWhitespaceCharacterIndex, lastChar).split(' ');
 
-        // No doc block found
-        if (!previousLine.text.endsWith('*/')) {
-            return property;
-        }
-
-        for (let line = previousLineNumber - 1; line > 0; line--) {
-            // Everything found
-            if (property.name && property.type && property.description) {
-                break;
-            }
-
-            const text = editor.document.lineAt(line).text;
-
-            // Reached the end of the doc block
-            if (text.includes('/**') || !text.includes('*')) {
-                break;
-            }
-
-            // Remove spaces & tabs
-            const lineParts = text.split(' ').filter(function(value){
-                return value !== '' && value !== "\t" && value !== "*";
-            });
-
-            const varPosition = lineParts.indexOf('@var');
-
-            // Found @var line
-            if (-1 !== varPosition) {
-                property.setType(lineParts[varPosition + 1]);
-
-                var descriptionParts = lineParts.slice(varPosition + 2);
-
-                if (descriptionParts.length) {
-                    property.description = descriptionParts.join(` `);
-                }
-
-                continue;
-            }
-
-            const posibleDescription = lineParts.join(` `);
-
-            if (posibleDescription[0] !== '@') {
-                property.description = posibleDescription;
-            }
+        if(lineInfo.length === 3){
+            property.setType(lineInfo[1]);
         }
 
         return property;
@@ -105,7 +64,18 @@ export default class Property {
     }
 
     generateMethodName(prefix : string) : string {
-        return prefix + this.name.charAt(0).toUpperCase() + this.name.substring(1);
+        let name = prefix + this.name.charAt(0).toUpperCase();
+
+        for(let i = 1; i <= this.name.substring(1).length; i++){
+            if('_' === this.name.charAt(i)){
+                name += this.name.charAt(i + 1).toUpperCase();
+                i++;
+            }else{
+                name += this.name.charAt(i);
+            }
+        }
+
+        return name;
     }
 
     getDescription() : string {
@@ -132,14 +102,6 @@ export default class Property {
         return this.type;
     }
 
-    getTypeHint() : string {
-        return this.typeHint;
-    }
-
-    isValidTypeHint(type : string) {
-        return (-1 === type.indexOf('|') && -1 === this.pseudoTypes.indexOf(type));
-    }
-
     setterDescription() : string {
         return this.generateMethodDescription('Set ');
     }
@@ -150,9 +112,5 @@ export default class Property {
 
     setType(type : string) {
         this.type = type;
-
-        if (this.isValidTypeHint(type)) {
-            this.typeHint = type;
-        }
     }
 }

@@ -4,16 +4,9 @@ import * as vscode from 'vscode';
 import Redirector from "./Redirector";
 import Property from "./Property";
 import Configuration from "./Configuration";
-import TemplatesManager from './TemplatesManager';
 
 class Resolver {
     config: Configuration;
-    templatesManager: TemplatesManager;
-
-    /**
-     * Types that won't be recognised as valid type hints
-     */
-    pseudoTypes = ['mixed', 'number', 'callback', 'object', 'void'];
 
     public constructor()
     {
@@ -24,7 +17,6 @@ class Resolver {
         }
 
         this.config = new Configuration;
-        this.templatesManager = new TemplatesManager;
     }
 
 
@@ -92,7 +84,7 @@ class Resolver {
     insertSetter() {
         const editor = this.activeEditor();
         let property = null;
-        let content = '';
+        let content = '\n';
 
         for (let index = 0; index < editor.selections.length; index++) {
             const selection = editor.selections[index];
@@ -112,30 +104,31 @@ class Resolver {
 
     getterTemplate(prop: Property) {
         const name = prop.getName();
-        const description = prop.getDescription();
         const tab = prop.getIndentation();
         const type = prop.getType();
-        const spacesAfterReturn = Array(this.config.getInt('spacesAfterReturn', 2) + 1).join(' ');
-        const templateFile = this.config.get('getterTemplate', 'getter.js');
+        let content = '';
 
-        if (this.templatesManager.exists(templateFile)) {
-            const template = require(this.templatesManager.path(templateFile));
-
-            return template(prop);
+        if(true === this.config.get('short', true)){
+            content = (
+                `\n`
+                + tab + `public function ` + prop.getterName() + `() : ` + type + `{ return $this->` + name + `; }\n`
+            );
+        }else{
+            content = (
+                `\n`
+                + tab + `/**\n`
+                + tab + ` * ` + prop.getterDescription() + `\n`
+                + (type ? tab + ` *\n` : ``)
+                + (type ? tab + ` * @return ` + type + `\n` : ``)
+                + tab + ` */\n`
+                + tab + `public function ` + prop.getterName() + `() : ` + type + `\n`
+                + tab + `{\n`
+                + tab + tab + `return $this->` + name + `;\n`
+                + tab + `}\n`
+            );
         }
 
-        return  (
-            `\n`
-            + tab + `/**\n`
-            + tab + ` * ` + prop.getterDescription() + `\n`
-            + (type ? tab + ` *\n` : ``)
-            + (type ? tab + ` * @return` + spacesAfterReturn + type + `\n` : ``)
-            + tab + ` */\n`
-            + tab + `public function ` + prop.getterName() + `()\n`
-            + tab + `{\n`
-            + tab + tab + `return $this->` + name + `;\n`
-            + tab + `}\n`
-        );
+        return content;
     }
 
     setterTemplate(prop: Property) {
@@ -143,35 +136,32 @@ class Resolver {
         const description = prop.getDescription();
         const tab = prop.getIndentation();
         const type = prop.getType();
-        const typeHint = prop.getTypeHint();
-        const spacesAfterParam = Array(this.config.getInt('spacesAfterParam', 2) + 1).join(' ');
-        const spacesAfterParamVar = Array(this.config.getInt('spacesAfterParamVar', 2) + 1).join(' ');
-        const spacesAfterReturn = Array(this.config.getInt('spacesAfterReturn', 2) + 1).join(' ');
-
-        const templateFile = this.config.get('setterTemplate', 'setter.js');
-
-        if (this.templatesManager.exists(templateFile)) {
-            const template = require(this.templatesManager.path(templateFile));
-
-            return template(prop);
+        let content = '';
+        
+        if(true === this.config.get('short', true)){
+            content = (
+                tab + `public function ` + prop.setterName() + `(` + (type ? type + ` ` : ``) + `$` + name + `) : self { $this->` + name + ` = $` + name + `; return $this; }\n`
+            );
+        }else{
+            content = (
+                `\n`
+                + tab + `/**\n`
+                + tab + ` * ` + prop.setterDescription() + `\n`
+                + (type ? tab + ` *\n` : ``)
+                + (type ? tab + ` * @param ` + type + ` $` + name + (description ? `  ` + description : ``) + `\n` : ``)
+                + tab + ` *\n`
+                + tab + ` * @return self\n`
+                + tab + ` */\n`
+                + tab + `public function ` + prop.setterName() + `(` + (type ? type + ` ` : ``) + `$` + name + `) : self` + `\n`
+                + tab+ `{\n`
+                + tab + tab + `$this->` + name + ` = $` + name + `;\n`
+                + `\n`
+                + tab + tab + `return $this;\n`
+                + tab + `}\n`
+            );
         }
 
-        return (
-            `\n`
-            + tab + `/**\n`
-            + tab + ` * ` + prop.setterDescription() + `\n`
-            + (type ? tab + ` *\n` : ``)
-            + (type ? tab + ` * @param` + spacesAfterParam + type + spacesAfterParamVar + `$` + name + (description ? `  ` + description : ``) + `\n` : ``)
-            + tab + ` *\n`
-            + tab + ` * @return` + spacesAfterReturn + `self\n`
-            + tab + ` */\n`
-            + tab + `public function ` + prop.setterName() + `(` + (typeHint ? typeHint + ` ` : ``) + `$` + name + `)\n`
-            + tab+ `{\n`
-            + tab + tab + `$this->` + name + ` = $` + name + `;\n`
-            + `\n`
-            + tab + tab + `return $this;\n`
-            + tab + `}\n`
-        );
+        return content;
     }
 
     renderTemplate(template: string) {
@@ -217,13 +207,13 @@ class Resolver {
     }
 
     showErrorMessage(message: string) {
-        message = 'phpGettersSetters error: ' + message.replace(/\$\(.+?\)\s\s/, '');
+        message = 'phpGetterSetter error: ' + message.replace(/\$\(.+?\)\s\s/, '');
 
         vscode.window.showErrorMessage(message);
     }
 
     showInformationMessage(message: string) {
-        message = 'phpGettersSetters info: ' + message.replace(/\$\(.+?\)\s\s/, '');
+        message = 'phpGetterSetter info: ' + message.replace(/\$\(.+?\)\s\s/, '');
 
         vscode.window.showInformationMessage(message);
     }
@@ -232,9 +222,9 @@ class Resolver {
 function activate(context: vscode.ExtensionContext) {
     let resolver = new Resolver;
 
-    let insertGetter = vscode.commands.registerCommand('phpGettersSetters.insertGetter', () => resolver.insertGetter());
-    let insertSetter = vscode.commands.registerCommand('phpGettersSetters.insertSetter', () => resolver.insertSetter());
-    let insertGetterAndSetter = vscode.commands.registerCommand('phpGettersSetters.insertGetterAndSetter', () => resolver.insertGetterAndSetter());
+    let insertGetter = vscode.commands.registerCommand('phpGetterSetter.insertGetter', () => resolver.insertGetter());
+    let insertSetter = vscode.commands.registerCommand('phpGetterSetter.insertSetter', () => resolver.insertSetter());
+    let insertGetterAndSetter = vscode.commands.registerCommand('phpGetterSetter.insertGetterAndSetter', () => resolver.insertGetterAndSetter());
 
     context.subscriptions.push(insertGetter);
     context.subscriptions.push(insertSetter);

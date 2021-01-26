@@ -1,17 +1,17 @@
 {
-    "name": "vscode-php-getters-setters",
-    "displayName": "PHP Getters & Setters",
-    "description": "Create PHP getters and setters from class properties",
-    "version": "1.2.3",
-    "publisher": "phproberto",
-    "author": "Roberto Segura <roberto@phproberto.com>",
+    "name": "vscode-php-getter-setter",
+    "displayName": "PHP 8 Getter & Setter",
+    "description": "Insert property Get and Set methods quickly",
+    "version": "1.0.0",
+    "publisher": "r4ven1245",
+    "author": "Mykhailo Kushnir <mkv.ysk@gmail.com>",
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/phproberto/vscode-php-getters-setters"
+        "url": "https://github.com/r4ven1245/vscode-php-getter-setter"
     },
     "bugs": {
-        "url": "https://github.com/phproberto/vscode-php-getters-setters/issues"
+        "url": "https://github.com/r4ven1245/vscode-php-getter-setter/issues"
     },
     "icon": "images/icon.png",
     "engines": {
@@ -29,100 +29,70 @@
     ],
     "activationEvents": [
         "onLanguage:php",
-        "onCommand:phpGettersSetters.insertGetter",
-        "onCommand:phpGettersSetters.insertSetter",
-        "onCommand:phpGettersSetters.insertGetterAndSetter"
+        "onCommand:phpGetterSetter.insertGetter",
+        "onCommand:phpGetterSetter.insertSetter",
+        "onCommand:phpGetterSetter.insertGetterAndSetter"
     ],
     "main": "./out/extension",
     "contributes": {
         "configuration": {
             "type": "object",
-            "title": "PHP getters & setters configuration",
+            "title": "PHP 8 Getter & Setter",
             "properties": {
-                "phpGettersSetters.redirect": {
+                "phpGetterSetter.short": {
                     "type": "boolean",
-                    "default": true,
-                    "description": "Redirect to generated functions after creating them?"
-                },
-                "phpGettersSetters.spacesAfterParam": {
-                    "type": "integer",
-                    "default": 2,
-                    "description": "How many spaces should we add after a @param tag?"
-                },
-                "phpGettersSetters.spacesAfterParamVar": {
-                    "type": "integer",
-                    "default": 2,
-                    "description": "How many spaces should we add after a @param variable name?"
-                },
-                "phpGettersSetters.spacesAfterReturn": {
-                    "type": "integer",
-                    "default": 2,
-                    "description": "How many spaces should we add after a @return tag?"
-                },
-                "phpGettersSetters.templatesDir": {
-                    "type": ["string", "null"],
-                    "default": null,
-                    "description": "Folder where custom templates are stored"
-                },
-                "phpGettersSetters.getterTemplate": {
-                    "type": "string",
-                    "default": "getter.js",
-                    "description": "File to use as template for getters"
-                },
-                "phpGettersSetters.setterTemplate": {
-                    "type": "string",
-                    "default": "setter.js",
-                    "description": "File to use as template for setters"
+                    "default": false,
+                    "description": "Shorten Getter and Setter to be one line each"
                 }
             }
         },
         "commands": [
             {
-                "command": "phpGettersSetters.insertGetter",
-                "title": "Insert PHP Getter"
+                "command": "phpGetterSetter.insertGetter",
+                "title": "Insert PHP 8 Getter"
             },
             {
-                "command": "phpGettersSetters.insertSetter",
-                "title": "Insert PHP Setter"
+                "command": "phpGetterSetter.insertSetter",
+                "title": "Insert PHP 8 Setter"
             },
             {
-                "command": "phpGettersSetters.insertGetterAndSetter",
-                "title": "Insert PHP Getter & Setter"
+                "command": "phpGetterSetter.insertGetterAndSetter",
+                "title": "Insert PHP 8 Getter & Setter"
             }
         ],
         "menus": {
             "commandPalette": [
                 {
-                    "command": "phpGettersSetters.insertGetter",
+                    "command": "phpGetterSetter.insertGetter",
                     "when": "editorLangId == php"
                 },
                 {
-                    "command": "phpGettersSetters.insertSetter",
+                    "command": "phpGetterSetter.insertSetter",
                     "when": "editorLangId == php"
                 },
                 {
-                    "command": "phpGettersSetters.insertGetterAndSetter",
+                    "command": "phpGetterSetter.insertGetterAndSetter",
                     "when": "editorLangId == php"
                 }
             ],
             "editor/context": [
                 {
                     "when": "resourceLangId == php",
-                    "command": "phpGettersSetters.insertGetter",
-                    "alt": "phpGettersSetters.insertGetter",
-                    "group": "0_phpGettersSetters@1"
+                    "command": "phpGetterSetter.insertGetter",
+                    "alt": "phpGetterSetter.insertGetter",
+                    "group": "0_phpGetterSetter@1"
                 },
                 {
                     "when": "resourceLangId == php",
-                    "command": "phpGettersSetters.insertSetter",
-                    "alt": "phpGettersSetters.insertSetter",
-                    "group": "0_phpGettersSetters@2"
+                    "command": "phpGetterSetter.insertSetter",
+                    "alt": "phpGetterSetter.insertSetter",
+                    "group": "0_phpGetterSetter@2"
                 },
                 {
                     "when": "resourceLangId == php",
-                    "command": "phpGettersSetters.insertGetterAndSetter",
-                    "alt": "phpGettersSetters.insertGetterAndSetter",
-                    "group": "0_phpGettersSetters@3"
+                    "command": "phpGetterSetter.insertGetterAndSetter",
+                    "alt": "phpGetterSetter.insertGetterAndSetter",
+                    "group": "0_phpGetterSetter@3"
                 }
             ]
         }
