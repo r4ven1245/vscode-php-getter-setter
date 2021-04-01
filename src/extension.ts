@@ -121,7 +121,7 @@ class Resolver {
                 + (type ? tab + ` *\n` : ``)
                 + (type ? tab + ` * @return ` + type + `\n` : ``)
                 + tab + ` */\n`
-                + tab + `public function ` + prop.getterName() + `()` + (type ? ` : ` + type + ` ` : ``) + `\n`
+                + tab + `public function ` + prop.getterName() + `()` + (type ? ` : ` + type : ``) + `\n`
                 + tab + `{\n`
                 + tab + tab + `return $this->` + name + `;\n`
                 + tab + `}\n`

@@ -9,6 +9,9 @@ It's a simple extension doing a simple job.
 
 I've updated the extension to work with PHP type hinting.
 
+## Important
+
+Make sure to reload VS Code after installing and/or changing the settings.
 ## Features
 
 This extension allows you to quickly generate getters and setters with one single command.
@@ -28,6 +31,10 @@ This extension contributes the following settings:
 ## Release Notes
 
 Relevant releases:
+
+### 1.0.1
+
+* Removed the extra space that was generating after the function return type in Long mode
 
 ### 1.0.0
 
