@@ -8,6 +8,7 @@ export default class Property {
     private indentation: string;
     private name: string;
     private type: string = null;
+    private isStatic: boolean = false;
 
     public constructor(name: string)
     {
@@ -36,6 +37,8 @@ export default class Property {
 
         let lastChar;
 
+        property.setIsStatic(activeLine.text.includes('static'));
+
         if(activeLine.text.includes('=')){
             lastChar = activeLine.text[activeLine.text.indexOf('=') - 1] === ' ' ? activeLine.text.indexOf('=') - 1 : activeLine.text.indexOf('=');
         }else{
@@ -44,8 +47,9 @@ export default class Property {
 
         const lineInfo = activeLine.text.substring(activeLine.firstNonWhitespaceCharacterIndex, lastChar).split(' ');
 
-        if(lineInfo.length === 3){
-            property.setType(lineInfo[1]);
+        if(lineInfo.length === 3 || property.getIsStatic() && lineInfo.length === 4){
+            let typeIndex = property.getIsStatic() ? 2 : 1;
+            property.setType(lineInfo[typeIndex]);
         }
 
         return property;
@@ -102,6 +106,10 @@ export default class Property {
         return this.type;
     }
 
+    getIsStatic() : boolean {
+        return this.isStatic;
+    }
+
     setterDescription() : string {
         return this.generateMethodDescription('Set ');
     }
@@ -112,5 +120,9 @@ export default class Property {
 
     setType(type : string) {
         this.type = type;
+    }
+
+    setIsStatic(isStatic : boolean) {
+        this.isStatic = isStatic;
     }
 }

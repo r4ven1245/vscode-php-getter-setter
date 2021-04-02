@@ -27,10 +27,14 @@ It adds 3 comands to vscode's command palette:
 This extension contributes the following settings:
 
 * `phpGetterSetter.short`: Shorten Getter and Setter to be one line each. Default: false
+* `phpGetterSetter.redirect`: Redirect to generated functions after creating them. Default: false
 
 ## Release Notes
 
-Relevant releases:
+### 1.0.2
+
+* Support for static properties
+* Readded the legacy configuration option to stop the cursor from moving to the generated methods
 
 ### 1.0.1
 

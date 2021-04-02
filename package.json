@@ -43,6 +43,11 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Shorten Getter and Setter to be one line each"
+                },
+                "phpGetterSetter.redirect": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Redirect to generated functions after creating them"
                 }
             }
         },

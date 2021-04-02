@@ -106,12 +106,14 @@ class Resolver {
         const name = prop.getName();
         const tab = prop.getIndentation();
         const type = prop.getType();
+        const isStatic = prop.getIsStatic();
+
         let content = '';
 
         if(true === this.config.get('short', true)){
             content = (
                 `\n`
-                + tab + `public function ` + prop.getterName() + `()` + (type ? ` : ` + type + ` ` : ``) + `{ return $this->` + name + `; }\n`
+                + tab + `public` + (isStatic ? ` static` : ``) + ` function ` + prop.getterName() + `()` + (type ? ` : ` + type + ` ` : ``) + `{ return` + (isStatic ? ` self::$` : ` $this->`) + name + `; }\n`
             );
         }else{
             content = (
@@ -121,9 +123,9 @@ class Resolver {
                 + (type ? tab + ` *\n` : ``)
                 + (type ? tab + ` * @return ` + type + `\n` : ``)
                 + tab + ` */\n`
-                + tab + `public function ` + prop.getterName() + `()` + (type ? ` : ` + type : ``) + `\n`
+                + tab + `public` + (isStatic ? ` static` : ``) + ` function ` + prop.getterName() + `()` + (type ? ` : ` + type : ``) + `\n`
                 + tab + `{\n`
-                + tab + tab + `return $this->` + name + `;\n`
+                + tab + tab + `return` + (isStatic ? ` self::$` : ` $this->`) + name + `;\n`
                 + tab + `}\n`
             );
         }
@@ -136,11 +138,15 @@ class Resolver {
         const description = prop.getDescription();
         const tab = prop.getIndentation();
         const type = prop.getType();
+
+        const isStatic = prop.getIsStatic();
+        const showType = type && !isStatic;
+
         let content = '';
         
         if(true === this.config.get('short', true)){
             content = (
-                tab + `public function ` + prop.setterName() + `(` + (type ? type + ` ` : ``) + `$` + name + `) : self { $this->` + name + ` = $` + name + `; return $this; }\n`
+                tab + `public` + (isStatic ? ` static` : ``) + ` function ` + prop.setterName() + `(` + (type ? type + ` ` : ``) + `$` + name + `)` + (isStatic ? ` { self::$` : ` : self { $this->`) + name + ` = $` + name + `;` + (isStatic ? `` : ` return $this;`) + ` }\n`
             );
         }else{
             content = (
@@ -149,14 +155,13 @@ class Resolver {
                 + tab + ` * ` + prop.setterDescription() + `\n`
                 + (type ? tab + ` *\n` : ``)
                 + (type ? tab + ` * @param ` + type + ` $` + name + (description ? `  ` + description : ``) + `\n` : ``)
-                + tab + ` *\n`
-                + tab + ` * @return self\n`
+                + (showType ? tab + ` *\n` : ``)
+                + (showType ? tab + ` * @return self` + `\n` : ``)
                 + tab + ` */\n`
-                + tab + `public function ` + prop.setterName() + `(` + (type ? type + ` ` : ``) + `$` + name + `) : self` + `\n`
+                + tab + `public` + (isStatic ? ` static` : ``) + ` function ` + prop.setterName() + `(` + (type ? type + ` ` : ``) + `$` + name + `)` + (isStatic ? `` : ` : self`) + `\n`
                 + tab+ `{\n`
-                + tab + tab + `$this->` + name + ` = $` + name + `;\n`
-                + `\n`
-                + tab + tab + `return $this;\n`
+                + tab + tab + (isStatic ? `self::$` : `$this->`) + name + ` = $` + name + `;`
+                + (isStatic ? `` : `\n\n` + tab + tab + `return $this;`) + `\n`
                 + tab + `}\n`
             );
         }
@@ -203,7 +208,7 @@ class Resolver {
     }
 
     isRedirectEnabled() : boolean {
-        return true === this.config.get('redirect', true);
+        return true === this.config.get('redirect', false);
     }
 
     showErrorMessage(message: string) {
