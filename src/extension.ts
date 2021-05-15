@@ -113,7 +113,7 @@ class Resolver {
         if(true === this.config.get('short', true)){
             content = (
                 `\n`
-                + tab + `public` + (isStatic ? ` static` : ``) + ` function ` + prop.getterName() + `()` + (type ? ` : ` + type + ` ` : ``) + `{ return` + (isStatic ? ` self::$` : ` $this->`) + name + `; }\n`
+                + tab + `public` + (isStatic ? ` static` : ``) + ` function ` + prop.getterName() + `()` + (type ? `: ` + type + ` ` : ``) + `{ return` + (isStatic ? ` self::$` : ` $this->`) + name + `; }\n`
             );
         }else{
             content = (
@@ -123,7 +123,7 @@ class Resolver {
                 + (type ? tab + ` *\n` : ``)
                 + (type ? tab + ` * @return ` + type + `\n` : ``)
                 + tab + ` */\n`
-                + tab + `public` + (isStatic ? ` static` : ``) + ` function ` + prop.getterName() + `()` + (type ? ` : ` + type : ``) + `\n`
+                + tab + `public` + (isStatic ? ` static` : ``) + ` function ` + prop.getterName() + `()` + (type ? `: ` + type : ``) + `\n`
                 + tab + `{\n`
                 + tab + tab + `return` + (isStatic ? ` self::$` : ` $this->`) + name + `;\n`
                 + tab + `}\n`
@@ -146,7 +146,7 @@ class Resolver {
         
         if(true === this.config.get('short', true)){
             content = (
-                tab + `public` + (isStatic ? ` static` : ``) + ` function ` + prop.setterName() + `(` + (type ? type + ` ` : ``) + `$` + name + `)` + (isStatic ? ` { self::$` : ` : self { $this->`) + name + ` = $` + name + `;` + (isStatic ? `` : ` return $this;`) + ` }\n`
+                tab + `public` + (isStatic ? ` static` : ``) + ` function ` + prop.setterName() + `(` + (type ? type + ` ` : ``) + `$` + name + `)` + (isStatic ? ` { self::$` : `: self { $this->`) + name + ` = $` + name + `;` + (isStatic ? `` : ` return $this;`) + ` }\n`
             );
         }else{
             content = (
@@ -158,7 +158,7 @@ class Resolver {
                 + (showType ? tab + ` *\n` : ``)
                 + (showType ? tab + ` * @return self` + `\n` : ``)
                 + tab + ` */\n`
-                + tab + `public` + (isStatic ? ` static` : ``) + ` function ` + prop.setterName() + `(` + (type ? type + ` ` : ``) + `$` + name + `)` + (isStatic ? `` : ` : self`) + `\n`
+                + tab + `public` + (isStatic ? ` static` : ``) + ` function ` + prop.setterName() + `(` + (type ? type + ` ` : ``) + `$` + name + `)` + (isStatic ? `` : `: self`) + `\n`
                 + tab+ `{\n`
                 + tab + tab + (isStatic ? `self::$` : `$this->`) + name + ` = $` + name + `;`
                 + (isStatic ? `` : `\n\n` + tab + tab + `return $this;`) + `\n`
