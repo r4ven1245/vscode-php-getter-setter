@@ -31,6 +31,10 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 1.0.3
+
+* PSR-12 compliant templates
+
 ### 1.0.2
 
 * Support for static properties
