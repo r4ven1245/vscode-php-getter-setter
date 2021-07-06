@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import Redirector from "./Redirector";
 import Property from "./Property";
 import Configuration from "./Configuration";
+import BracketFinder from "./BracketFinder";
 
 class Resolver {
     config: Configuration;
@@ -26,17 +27,11 @@ class Resolver {
 
     closingClassLine() {
         const editor = this.activeEditor();
+        const position = editor.selection.active;
 
-        for (let lineNumber = editor.document.lineCount - 1; lineNumber > 0; lineNumber--) {
-            const line = editor.document.lineAt(lineNumber);
-            const text = line.text.trim();
+        let closingBracketLine = editor.document.lineAt(BracketFinder.fromPosition(position)[1].line);
 
-            if (text.startsWith('}')) {
-                return line;
-            }
-        }
-
-        return null;
+        return closingBracketLine;
     }
 
     insertGetter() {
