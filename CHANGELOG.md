@@ -1,6 +1,10 @@
 # Change Log
 Changes to the extension can be found in this file.
 
+## [1.1.1] - 2021-07-06
+- Fixed line reader https://github.com/r4ven1245/vscode-php-getter-setter/issues/2
+- Fixed namespace close bracket finder https://github.com/r4ven1245/vscode-php-getter-setter/issues/3
+
 ## [1.0.3] - 2021-05-15
 - PSR-12 compliant templates
 

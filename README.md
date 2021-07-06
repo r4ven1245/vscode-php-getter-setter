@@ -31,6 +31,11 @@ This extension contributes the following settings:
 
 ## Release Notes
 
+### 1.1.1
+
+* Fixed line reader https://github.com/r4ven1245/vscode-php-getter-setter/issues/2
+* Fixed namespace close bracket finder https://github.com/r4ven1245/vscode-php-getter-setter/issues/3
+
 ### 1.0.3
 
 * PSR-12 compliant templates

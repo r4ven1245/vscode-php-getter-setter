@@ -2,7 +2,7 @@
     "name": "vscode-php-getter-setter",
     "displayName": "PHP 8 Getter & Setter",
     "description": "Insert property Get and Set methods quickly",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "publisher": "MykhailoKushnir",
     "author": "Mykhailo Kushnir <mkv.ysk@gmail.com>",
     "license": "MIT",
