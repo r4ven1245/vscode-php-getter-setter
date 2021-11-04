@@ -47,7 +47,7 @@ export default class Property {
 
         const lineInfo = activeLine.text.substring(activeLine.firstNonWhitespaceCharacterIndex, lastChar).split(' ').filter((el) => { return el != ''; });
 
-        if(lineInfo.length === 3 || property.getIsStatic() && lineInfo.length === 4){
+        if ((lineInfo.length === 3 && !property.getIsStatic()) || (property.getIsStatic() && lineInfo.length === 4)) {
             let typeIndex = property.getIsStatic() ? 2 : 1;
             property.setType(lineInfo[typeIndex]);
         }
