@@ -37,7 +37,7 @@ export default class Property {
 
         let lastChar;
 
-        property.setIsStatic(activeLine.text.includes('static'));
+        property.setIsStatic(activeLine.text.includes(' static '));
 
         if(activeLine.text.includes('=')){
             lastChar = activeLine.text[activeLine.text.indexOf('=') - 1] === ' ' ? activeLine.text.indexOf('=') - 1 : activeLine.text.indexOf('=');
